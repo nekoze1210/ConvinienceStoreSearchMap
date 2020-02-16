@@ -7,6 +7,10 @@ export default {
     map: {
       type: Object,
       required: true
+    },
+    latLng: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -17,8 +21,7 @@ export default {
   mounted() {
     this.marker = new this.$google.maps.Marker({
       map: this.$props.map,
-      position: new this.$google.maps.LatLng(35.7329854, 139.7128128),
-      draggable: true
+      position: this.$props.latLng
     })
   }
 }

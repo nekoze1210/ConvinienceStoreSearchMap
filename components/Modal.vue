@@ -28,3 +28,12 @@ export default {
   }
 }
 </script>
+
+<style>
+#modal {
+  width: 100%;
+  height: 20%;
+  background: #fff;
+  display: none;
+}
+</style>

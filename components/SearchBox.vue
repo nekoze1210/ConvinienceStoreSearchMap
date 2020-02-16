@@ -3,6 +3,7 @@
     id="search-box"
     :style="{ display: showSearchBox ? 'block' : 'none' }"
     v-model="keyword"
+    @change="$emit('input-keyword')"
     type="text"
     placeholder="近くのコンビニを検索"
   />
@@ -12,8 +13,17 @@
 export default {
   data() {
     return {
-      showSearchBox: false,
-      keyword: ''
+      showSearchBox: false
+    }
+  },
+  computed: {
+    keyword: {
+      get() {
+        return this.$store.state.searchFormKeyword
+      },
+      set(value) {
+        this.$store.commit('setSearchFormKeyword', value)
+      }
     }
   },
   mounted() {
