@@ -1,7 +1,10 @@
 <template>
   <div>
-    <google-maps :mapElement="mapElement">
-      <template #marker="{map}">
+    <google-maps
+      :mapElement="mapElement"
+      @change-store-results="changeMarkersPosition"
+    >
+      <template #marker="{map}" v-if="showMarkers">
         <div v-for="(markerLatLng, index) in markers" :key="index">
           <marker-overlay :map="map" :latLng="markerLatLng" />
         </div>
@@ -29,19 +32,32 @@ export default {
   data() {
     return {
       steps: []
+      // showMarkers: false
     }
   },
   computed: {
     markers: {
       get() {
-        console.log(this.$store.state.storeMarkerLatLngArray)
         return this.$store.state.storeMarkerLatLngArray
+      },
+      set(value) {
+        this.$store.commit('setMarkerLatLngArray', value)
+        this.showMarkers = true
+      }
+    },
+    showMarkers: {
+      get() {
+        return this.$store.state.storeMarkerLatLngArray.length > 0
       }
     }
   },
   methods: {
     loadPolylineOverlay(steps) {
       this.steps = steps
+    },
+    changeMarkersPosition(markers) {
+      this.showMarkers = false
+      this.markers = markers
     }
   }
 }

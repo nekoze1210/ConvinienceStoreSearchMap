@@ -48,17 +48,12 @@ export default {
     const { Map } = this.$google.maps
     this.map = new Map(this.$props.mapElement, this.$props.mapOptions)
     this.setModal()
-    // this.setSeachBox()
     this.$store.commit('setCurrentCenter', this.map.getCenter())
     this.addDragEndListener()
     this.loadLibraries()
+    this.searchConvinieneStores()
   },
   methods: {
-    // setSeachBox() {
-    //   this.map.controls[this.$google.maps.ControlPosition.TOP_CENTER].push(
-    //     this.$el.querySelector('#search-box')
-    //   )
-    // },
     hideSearchBox() {
       this.showSearchBox = false
     },
@@ -68,31 +63,27 @@ export default {
       )
     },
     addDragEndListener() {
-      this.addListener('dragend', () => {
+      this.map.addListener('dragend', () => {
         this.$store.commit('setCurrentCenter', this.map.getCenter())
-        this.searchConvinieneStores('コンビニエンスストア')
+        this.searchConvinieneStores()
       })
-    },
-    addListener(event, callback) {
-      this.map.addListener(event, callback)
     },
     loadLibraries(map) {
       this.libraries.autocompleteService = new this.$google.maps.places.AutocompleteService()
       this.libraries.geocoder = new this.$google.maps.Geocoder()
       this.libraries.directionsService = new this.$google.maps.DirectionsService()
     },
-    async searchConvinieneStores(keyword) {
+    async searchConvinieneStores() {
       const placePredictionRequest = {
-        input: keyword,
+        input: 'コンビニ',
         location: this.$store.state.currentCenterLatLng,
-        radius: 500
+        radius: 10
       }
       const placePredictions = await this.getPlacePredictions(
         placePredictionRequest
       )
 
       const predictionLatLngArray = []
-
       for (let i = 0; i < placePredictions.length; i++) {
         const geocodeRequest = {
           placeId: placePredictions[i].place_id
@@ -101,7 +92,9 @@ export default {
 
         predictionLatLngArray.push(geocode[0].geometry.location)
       }
-      this.$store.commit('setMarkerLatLngArray', predictionLatLngArray)
+      this.$emit('change-store-results', [])
+      this.$emit('change-store-results', predictionLatLngArray)
+      // this.$store.commit('setMarkerLatLngArray', predictionLatLngArray)
     },
     getPlacePredictions(request) {
       return new Promise((resolve, reject) => {

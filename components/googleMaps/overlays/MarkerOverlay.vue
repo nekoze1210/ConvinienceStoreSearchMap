@@ -23,6 +23,9 @@ export default {
       map: this.$props.map,
       position: this.$props.latLng
     })
+  },
+  beforeDestroy() {
+    this.marker.setMap(null)
   }
 }
 </script>
