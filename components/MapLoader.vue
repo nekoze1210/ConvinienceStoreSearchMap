@@ -5,8 +5,12 @@
       @change-store-results="changeMarkersPosition"
     >
       <template #marker="{map}" v-if="showMarkers">
-        <div v-for="(markerLatLng, index) in markers" :key="index">
-          <marker-overlay :map="map" :latLng="markerLatLng" />
+        <div v-for="marker in markers" :key="marker.place_id">
+          <marker-overlay
+            :map="map"
+            :latLng="marker.geometry.location"
+            :key="NaN"
+          />
         </div>
       </template>
       <template #polyline="{map}" v-if="steps.length > 1">
@@ -38,16 +42,15 @@ export default {
   computed: {
     markers: {
       get() {
-        return this.$store.state.storeMarkerLatLngArray
+        return this.$store.state.currentMarkers
       },
       set(value) {
         this.$store.commit('setMarkerLatLngArray', value)
-        this.showMarkers = true
       }
     },
     showMarkers: {
       get() {
-        return this.$store.state.storeMarkerLatLngArray.length > 0
+        return this.$store.state.currentMarkers.length > 0
       }
     }
   },
@@ -56,7 +59,6 @@ export default {
       this.steps = steps
     },
     changeMarkersPosition(markers) {
-      this.showMarkers = false
       this.markers = markers
     }
   }

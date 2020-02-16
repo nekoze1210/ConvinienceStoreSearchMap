@@ -89,12 +89,10 @@ export default {
           placeId: placePredictions[i].place_id
         }
         const geocode = await this.geocodePlace(geocodeRequest)
-
-        predictionLatLngArray.push(geocode[0].geometry.location)
+        predictionLatLngArray.push(geocode[0])
       }
       this.$emit('change-store-results', [])
       this.$emit('change-store-results', predictionLatLngArray)
-      // this.$store.commit('setMarkerLatLngArray', predictionLatLngArray)
     },
     getPlacePredictions(request) {
       return new Promise((resolve, reject) => {

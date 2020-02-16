@@ -2,7 +2,7 @@
 
 export const state = () => ({
   currentCenterLatLng: null,
-  storeMarkerLatLngArray: []
+  currentMarkers: []
 })
 
 export const mutations = {
@@ -10,6 +10,6 @@ export const mutations = {
     state.currentCenterLatLng = latLng
   },
   setMarkerLatLngArray(state, array) {
-    state.storeMarkerLatLngArray = array
+    state.currentMarkers = array
   }
 }
