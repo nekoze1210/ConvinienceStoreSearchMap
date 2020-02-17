@@ -83,16 +83,17 @@ export default {
         placePredictionRequest
       )
 
-      const predictionLatLngArray = []
+      const results = []
       for (let i = 0; i < placePredictions.length; i++) {
         const geocodeRequest = {
           placeId: placePredictions[i].place_id
         }
         const geocode = await this.geocodePlace(geocodeRequest)
-        predictionLatLngArray.push(geocode[0])
+        results.push(geocode[0])
       }
       this.$emit('change-store-results', [])
-      this.$emit('change-store-results', predictionLatLngArray)
+      console.log(results)
+      this.$emit('change-store-results', results)
     },
     getPlacePredictions(request) {
       return new Promise((resolve, reject) => {
