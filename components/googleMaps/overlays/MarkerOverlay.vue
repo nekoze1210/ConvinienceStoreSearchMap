@@ -11,6 +11,10 @@ export default {
     latLng: {
       type: Object,
       required: true
+    },
+    placeId: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -21,7 +25,12 @@ export default {
   mounted() {
     this.marker = new this.$google.maps.Marker({
       map: this.$props.map,
-      position: this.$props.latLng
+      position: this.$props.latLng,
+      animation: this.$google.maps.Animation.DROP
+    })
+    this.$emit('load-marker-overlay', {
+      marker: this.marker,
+      placeId: this.$props.placeId
     })
   },
   beforeDestroy() {

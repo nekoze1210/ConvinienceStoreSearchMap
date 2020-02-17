@@ -1,15 +1,13 @@
 <template>
   <div>
-    <google-maps
-      :mapElement="mapElement"
-      @change-store-results="changeMarkersPosition"
-    >
-      <template #marker="{map}" v-if="showMarkers">
-        <div v-for="marker in markers" :key="marker.place_id">
+    <google-maps :mapElement="mapElement" @load-google-maps="onLoadGoogleMaps">
+      <template #marker="{map}" v-if="showstores">
+        <div v-for="store in stores" :key="store.place_id">
           <marker-overlay
             :map="map"
-            :latLng="marker.geometry.location"
-            :key="NaN"
+            :latLng="store.position"
+            :placeId="store.placeId"
+            @load-marker-overlay="onLoadMarker"
           />
         </div>
       </template>
@@ -17,16 +15,18 @@
         <polyline-overlay :map="map" :steps="steps" />
       </template>
     </google-maps>
+    <map-modal id="modal" />
   </div>
 </template>
 
 <script>
+import MapModal from '~/components/MapModal.vue'
 import GoogleMaps from '~/components/GoogleMaps.vue'
 import MarkerOverlay from '~/components/googleMaps/overlays/MarkerOverlay.vue'
 import PolylineOverlay from '~/components/googleMaps/overlays/PolylineOverlay.vue'
 
 export default {
-  components: { GoogleMaps, MarkerOverlay, PolylineOverlay },
+  components: { GoogleMaps, MarkerOverlay, PolylineOverlay, MapModal },
   props: {
     mapElement: {
       type: HTMLDivElement,
@@ -35,22 +35,21 @@ export default {
   },
   data() {
     return {
-      steps: []
-      // showMarkers: false
+      steps: [],
+      showModal: false,
+      libraries: {
+        placesService: null,
+        directionsService: null
+      }
     }
   },
   computed: {
-    markers: {
-      get() {
-        return this.$store.state.currentMarkers
-      },
-      set(value) {
-        this.$store.commit('setMarkerLatLngArray', value)
-      }
+    stores() {
+      return this.$store.state.stores
     },
-    showMarkers: {
+    showstores: {
       get() {
-        return this.$store.state.currentMarkers.length > 0
+        return this.$store.state.stores.length > 0
       }
     }
   },
@@ -58,8 +57,34 @@ export default {
     loadPolylineOverlay(steps) {
       this.steps = steps
     },
-    changeMarkersPosition(markers) {
-      this.markers = markers
+    onLoadGoogleMaps(map) {
+      this.setModal(map)
+      this.$store.commit('setCurrentCenter', map.getCenter())
+      this.loadLibraries(map)
+      this.addDragEndListener(map)
+      this.$store.dispatch('resetStores', this.libraries.placesService)
+    },
+    onLoadMarker({ marker, placeId }) {
+      marker.addListener('click', () => {
+        this.$store.commit('setSelectedStore', placeId)
+      })
+    },
+    loadLibraries(map) {
+      this.libraries.directionsService = new this.$google.maps.DirectionsService()
+      this.libraries.placesService = new this.$google.maps.places.PlacesService(
+        map
+      )
+    },
+    addDragEndListener(map) {
+      map.addListener('dragend', () => {
+        this.$store.commit('setCurrentCenter', map.getCenter())
+        this.$store.dispatch('resetStores', this.libraries.placesService)
+      })
+    },
+    setModal(map) {
+      map.controls[this.$google.maps.ControlPosition.BOTTOM_CENTER].push(
+        this.$el.querySelector('#modal')
+      )
     }
   }
 }

@@ -1,9 +1,12 @@
 <template>
-  <div
-    id="modal"
-    :style="{ height: modalSize, display: showModal ? 'block' : 'none' }"
-  >
+  <div :style="{ height: modalSize }">
     <h2>{{ heading }}</h2>
+    <div v-show="!selectedStore" v-for="store in stores" :key="store.placeId">
+      <p>{{ store.name }}</p>
+      <p>{{ store.photos }}</p>
+      <p>{{ store.position }}</p>
+      <p>{{ store.placeId }}</p>
+    </div>
   </div>
 </template>
 
@@ -12,12 +15,16 @@ export default {
   data() {
     return {
       heading: '近くのコンビニ',
-      showModal: false,
       modalSize: '20%'
     }
   },
-  mounted() {
-    this.showModal = true
+  computed: {
+    stores() {
+      return this.$store.state.stores
+    },
+    selectedStore() {
+      return this.$store.state.selectedStore
+    }
   },
   methods: {
     extendModal(percentage) {
@@ -34,6 +41,5 @@ export default {
   width: 100%;
   height: 20%;
   background: #fff;
-  display: none;
 }
 </style>
