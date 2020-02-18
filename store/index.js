@@ -23,7 +23,7 @@ export const actions = {
     placesService.textSearch(
       {
         location: state.currentCenterLatLng,
-        radius: 100,
+        radius: 300,
         query: 'コンビニ'
       },
       (results, status) => {
