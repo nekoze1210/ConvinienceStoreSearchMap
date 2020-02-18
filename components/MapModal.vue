@@ -5,8 +5,7 @@
       <div v-show="!selectedStore" v-for="store in stores" :key="store.placeId">
         <div class="store-items">
           <img
-            :src="store.photos[0].getUrl()"
-            v-if="store.hasOwnProperty('photos')"
+            :src="store.photos === undefined ? '' : store.photos[0].getUrl()"
             class="store-image"
           />
           <div>
