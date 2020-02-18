@@ -48,6 +48,7 @@ export default {
 
 <style>
 h2#title {
+  text-align: center;
   font-size: 20px;
   margin: 10px 0px;
 }
@@ -72,8 +73,5 @@ h2#title {
 .store-image {
   width: 150px;
   height: 100px;
-}
-
-.store-name {
 }
 </style>
