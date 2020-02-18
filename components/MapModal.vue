@@ -2,7 +2,12 @@
   <div :style="{ height: modalSize }">
     <h2 id="title">{{ heading }}</h2>
     <div class="stores">
-      <div v-show="!selectedStore" v-for="store in stores" :key="store.placeId">
+      <div
+        v-show="!selectedStore"
+        v-for="store in stores"
+        :key="store.placeId"
+        @click="$store.commit('setSelectedStore', store.placeId)"
+      >
         <div class="store-items">
           <img
             :src="store.photos === undefined ? '' : store.photos[0].getUrl()"
