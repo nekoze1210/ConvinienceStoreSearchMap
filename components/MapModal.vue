@@ -54,7 +54,7 @@ h2#title {
 
 #modal {
   width: 100%;
-  height: 20%;
+  height: 35%;
   background: #fff;
 }
 
