@@ -20,7 +20,8 @@ export default {
         zoom: 15,
         mapTypeId: 'roadmap',
         disableDefaultUI: true,
-        clickableIcons: false
+        clickableIcons: false,
+        gestureHandling: 'greedy'
       })
     },
     mapElement: {
