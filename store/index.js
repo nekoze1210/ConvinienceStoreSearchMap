@@ -40,5 +40,8 @@ export const actions = {
         }
       }
     )
+  },
+  findStore({ state }, placeId) {
+    return state.stores.find((store) => store.placeId === placeId)
   }
 }

@@ -28,7 +28,6 @@
 export default {
   data() {
     return {
-      heading: '近くのコンビニ',
       modalSize: '40%'
     }
   },
@@ -38,6 +37,12 @@ export default {
     },
     selectedStore() {
       return this.$store.state.selectedStore
+    },
+    heading() {
+      const store = this.$store.state.stores.find(
+        (store) => store.placeId === this.$store.state.selectedStore
+      )
+      return store !== undefined ? store.name : '近くのコンビニ'
     }
   },
   methods: {
