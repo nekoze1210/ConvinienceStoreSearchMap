@@ -1,21 +1,22 @@
 <template>
   <div :style="{ height: modalSize }">
-    <h2>{{ heading }}</h2>
-    <ul
-      v-show="!selectedStore"
-      v-for="store in stores"
-      :key="store.placeId"
-      class="horizontal-list"
-    >
-      <li class="item">
-        <div>
-          <p>{{ store.name }}</p>
-          <p>{{ store.photos }}</p>
-          <p>{{ store.position }}</p>
-          <p>{{ store.placeId }}</p>
+    <h2 id="title">{{ heading }}</h2>
+    <div class="stores">
+      <div v-show="!selectedStore" v-for="store in stores" :key="store.placeId">
+        <div class="store-items">
+          <img
+            :src="store.photos[0].getUrl()"
+            v-if="store.hasOwnProperty('photos')"
+            class="store-image"
+          />
+          <div>
+            <h3 class="store-name">{{ store.name }}</h3>
+            <p>{{ store.position }}</p>
+            <p>{{ store.placeId }}</p>
+          </div>
         </div>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -24,7 +25,7 @@ export default {
   data() {
     return {
       heading: '近くのコンビニ',
-      modalSize: '20%'
+      modalSize: '30%'
     }
   },
   computed: {
@@ -46,26 +47,33 @@ export default {
 </script>
 
 <style>
+h2#title {
+  font-size: 20px;
+  margin: 10px 0px;
+}
+
 #modal {
   width: 100%;
   height: 20%;
   background: #fff;
 }
-.horizontal-list {
-  overflow-x: auto;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
+
+.stores {
+  height: 100%;
+  overflow-y: scroll;
 }
 
-.item {
-  /* 横スクロール用 */
-  display: inline-block;
-  /* width: 90%; */
+.store-items {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+}
 
-  /* 見た目調整 */
-  /* height: 400px;
-  margin: 16px; */
-  font-size: 15px;
-  background: rgba(255, 0, 0, 0.4);
+.store-image {
+  width: 150px;
+  height: 100px;
+}
+
+.store-name {
 }
 </style>
