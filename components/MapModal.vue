@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       heading: '近くのコンビニ',
-      modalSize: '30%'
+      modalSize: '40%'
     }
   },
   computed: {
@@ -54,7 +54,7 @@ h2#title {
 
 #modal {
   width: 100%;
-  height: 35%;
+  height: 0;
   background: #fff;
 }
 
