@@ -2,24 +2,27 @@
   <div :style="{ height: modalSize }">
     <h2 id="title">{{ heading }}</h2>
     <div class="stores">
-      <div
-        v-show="!selectedStore"
-        v-for="store in stores"
-        :key="store.placeId"
-        @click="$store.commit('setSelectedStore', store.placeId)"
-      >
-        <div class="store-items">
-          <img
-            :src="store.photos === undefined ? '' : store.photos[0].getUrl()"
-            class="store-image"
-          />
-          <div>
-            <h3 class="store-name">{{ store.name }}</h3>
-            <p>{{ store.position }}</p>
-            <p>{{ store.placeId }}</p>
+      <div v-if="!selectedStore">
+        <div
+          v-show="!selectedStore"
+          v-for="store in stores"
+          :key="store.placeId"
+          @click="$store.commit('setSelectedStore', store.placeId)"
+        >
+          <div class="store-items">
+            <img
+              :src="store.photos === undefined ? '' : store.photos[0].getUrl()"
+              class="store-image"
+            />
+            <div>
+              <h3 class="store-name">{{ store.name }}</h3>
+              <p>{{ store.position }}</p>
+              <p>{{ store.placeId }}</p>
+            </div>
           </div>
         </div>
       </div>
+      <div v-else></div>
     </div>
   </div>
 </template>
@@ -39,10 +42,9 @@ export default {
       return this.$store.state.selectedStore
     },
     heading() {
-      const store = this.$store.state.stores.find(
-        (store) => store.placeId === this.$store.state.selectedStore
-      )
-      return store !== undefined ? store.name : '近くのコンビニ'
+      return this.selectedStore !== undefined && this.selectedStore !== null
+        ? this.selectedStore.name
+        : '近くのコンビニ'
     }
   },
   methods: {

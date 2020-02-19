@@ -12,7 +12,9 @@ export const mutations = {
     state.stores = array
   },
   setSelectedStore(state, placeId) {
-    state.selectedStore = placeId
+    state.selectedStore = state.stores.find(
+      (store) => (store.placeId = placeId)
+    )
   }
 }
 
