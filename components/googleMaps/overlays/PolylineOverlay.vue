@@ -29,10 +29,7 @@ export default {
   },
   methods: {
     buildMvcArray() {
-      const stepsLatLng = this.$props.steps.map((step) => {
-        return new this.$google.maps.LatLng(step.lat, step.lng)
-      })
-      return new this.$google.maps.MVCArray(stepsLatLng)
+      return new this.$google.maps.MVCArray(this.$props.steps)
     }
   }
 }

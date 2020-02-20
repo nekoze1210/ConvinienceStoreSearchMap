@@ -1,7 +1,8 @@
 export const state = () => ({
   currentCenterLatLng: null,
   stores: [],
-  selectedStore: null
+  selectedStore: null,
+  routeSteps: []
 })
 
 export const mutations = {
@@ -15,6 +16,9 @@ export const mutations = {
     state.selectedStore = state.stores.find(
       (store) => (store.placeId = placeId)
     )
+  },
+  setRouteSteps(state, steps) {
+    state.routeSteps = steps
   }
 }
 
@@ -43,7 +47,26 @@ export const actions = {
       }
     )
   },
-  findStore({ state }, placeId) {
+  findStore({ state }, { placeId }) {
     return state.stores.find((store) => store.placeId === placeId)
+  },
+  estimateRoute({ state, commit }, currentLocation) {
+    const request = {
+      origin: currentLocation,
+      destination: state.selectedStore.position,
+      travelMode: 'WALKING',
+      optimizeWaypoints: true,
+      avoidHighways: false,
+      avoidTolls: false
+    }
+    const directionsService = new this.$google.maps.DirectionsService()
+    directionsService.route(request, (result, status) => {
+      if (status === 'OK') {
+        const decodedPath = this.$google.maps.geometry.encoding.decodePath(
+          result.routes[0].overview_polyline
+        )
+        commit('setRouteSteps', decodedPath)
+      }
+    })
   }
 }

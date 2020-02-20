@@ -11,11 +11,11 @@
           />
         </div>
       </template>
-      <template #polyline="{map}" v-if="steps.length > 1">
-        <polyline-overlay :map="map" :steps="steps" />
+      <template #polyline="{map}" v-if="routeSteps.length > 1">
+        <polyline-overlay :map="map" :steps="routeSteps" />
       </template>
     </google-maps>
-    <map-modal id="modal" />
+    <map-modal id="modal" @click-store-route="onClickStoreRoute" />
   </div>
 </template>
 
@@ -47,21 +47,21 @@ export default {
     stores() {
       return this.$store.state.stores
     },
-    showstores: {
-      get() {
-        return this.$store.state.stores.length > 0
-      }
+    showstores() {
+      return this.$store.state.stores.length > 0
+    },
+    routeSteps() {
+      return this.$store.state.routeSteps
     }
   },
   methods: {
-    loadPolylineOverlay(steps) {
-      this.steps = steps
-    },
     onLoadGoogleMaps(map) {
       this.setModal(map)
       this.$store.commit('setCurrentCenter', map.getCenter())
-      this.loadLibraries(map)
-      this.addIdleListener(map)
+      this.libraries.placesService = new this.$google.maps.places.PlacesService(
+        map
+      )
+      this.addDragEndListener(map)
       this.$store.dispatch('resetStores', this.libraries.placesService)
     },
     onLoadMarker({ marker, placeId }) {
@@ -69,14 +69,8 @@ export default {
         this.$store.commit('setSelectedStore', placeId)
       })
     },
-    loadLibraries(map) {
-      this.libraries.directionsService = new this.$google.maps.DirectionsService()
-      this.libraries.placesService = new this.$google.maps.places.PlacesService(
-        map
-      )
-    },
-    addIdleListener(map) {
-      map.addListener('idle', () => {
+    addDragEndListener(map) {
+      map.addListener('dragend', () => {
         this.$store.commit('setCurrentCenter', map.getCenter())
         this.$store.dispatch('resetStores', this.libraries.placesService)
       })
@@ -84,6 +78,19 @@ export default {
     setModal(map) {
       map.controls[this.$google.maps.ControlPosition.BOTTOM_CENTER].push(
         this.$el.querySelector('#modal')
+      )
+    },
+    onClickStoreRoute() {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.$store.dispatch(
+            'estimateRoute',
+            position.coords.latitude + ',' + position.coords.longitude
+          )
+        },
+        () => {
+          alert('失敗')
+        }
       )
     }
   }
