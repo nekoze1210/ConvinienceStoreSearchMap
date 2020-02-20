@@ -61,7 +61,7 @@ export default {
       this.setModal(map)
       this.$store.commit('setCurrentCenter', map.getCenter())
       this.loadLibraries(map)
-      this.addDragEndListener(map)
+      this.addIdleListener(map)
       this.$store.dispatch('resetStores', this.libraries.placesService)
     },
     onLoadMarker({ marker, placeId }) {
@@ -75,8 +75,8 @@ export default {
         map
       )
     },
-    addDragEndListener(map) {
-      map.addListener('dragend', () => {
+    addIdleListener(map) {
+      map.addListener('idle', () => {
         this.$store.commit('setCurrentCenter', map.getCenter())
         this.$store.dispatch('resetStores', this.libraries.placesService)
       })
