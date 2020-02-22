@@ -64,7 +64,7 @@ export const actions = {
   },
   estimateRoute({ state, commit, dispatch }, placeId) {
     dispatch('selectStore', placeId)
-    dispatch('changeModalHeightPercentage', 10)
+    dispatch('changeModalHeightPercentage', 15)
     // 現在地取得
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -84,7 +84,7 @@ export const actions = {
         })
       },
       () => {
-        alert('失敗')
+        alert('経路情報の取得に失敗しました。')
       }
     )
   }
