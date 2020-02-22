@@ -77,10 +77,13 @@ export default {
       })
     },
     addMapDragEndListener(map) {
-      this.dragEndListener = map.addListener('dragend', () => {
-        this.$store.commit('setCurrentCenter', map.getCenter())
-        this.$store.dispatch('resetStores', this.libraries.placesService)
-      })
+      this.dragEndListener = this.dragEndListener = map.addListener(
+        'dragend',
+        () => {
+          this.$store.commit('setCurrentCenter', map.getCenter())
+          this.$store.dispatch('resetStores', this.libraries.placesService)
+        }
+      )
     },
     setModal(map) {
       map.controls[this.$google.maps.ControlPosition.BOTTOM_CENTER].push(
@@ -89,6 +92,7 @@ export default {
     },
     estimateRoute(placeId) {
       this.$store.dispatch('estimateRoute', placeId)
+      this.dragEndListener.remove()
     }
   }
 }
