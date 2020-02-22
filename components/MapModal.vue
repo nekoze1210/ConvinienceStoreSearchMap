@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ height: modalSize }" class="container-fluid">
+  <div :style="{ height: modalHeight }" class="container-fluid">
     <h2 class="title is-5">{{ heading }}</h2>
     <div v-if="!selectedStore" class="columns scrollable">
       <div
@@ -13,7 +13,7 @@
             <img
               :src="storePhoto(store)"
               :alt="store.name"
-              class="image store-image is-128x128"
+              class="image store-image is-128x128 is-rounded"
             />
           </div>
           <div class="column">
@@ -23,19 +23,11 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <div class="container"></div>
-    </div>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      modalSize: '40%'
-    }
-  },
   computed: {
     stores() {
       return this.$store.state.stores
@@ -47,19 +39,22 @@ export default {
       return this.selectedStore !== undefined && this.selectedStore !== null
         ? '「' + this.selectedStore.name + '」' + 'までのルート'
         : '近くのコンビニ'
+    },
+    modalHeight: {
+      get() {
+        return this.$store.state.modalHeight
+      },
+      set(height) {
+        this.$store.dispatch('changeModalHeightPercentage', height)
+      }
     }
   },
   methods: {
-    extendModal(percentage) {
-      this.modalSize = percentage.toString() + '%'
-    },
     storePhoto(store) {
       return store.photos === undefined ? '' : store.photos[0].getUrl()
     },
     onClickButton(store) {
-      this.extendModal(20)
-      this.$store.commit('setSelectedStore', store.placeId)
-      this.$emit('click-store-route')
+      this.$store.dispatch('estimateRoute', store.placeId)
     }
   }
 }
@@ -77,7 +72,7 @@ h2.title {
   background: #fff;
   box-shadow: 0px -4px 3px rgba(0, 0, 0, 0.25);
   border-radius: 10px 10px 0px 0px;
-  transition: height 0.5s;
+  transition: height 0.25s;
 }
 
 .stores {
@@ -85,8 +80,7 @@ h2.title {
   overflow-y: scroll;
 }
 
-.store-image {
-  margin: 0 auto;
+.is-rounded {
   border-radius: 5px;
 }
 

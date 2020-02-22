@@ -15,7 +15,7 @@
         <polyline-overlay :map="map" :steps="routeSteps" />
       </template>
     </google-maps>
-    <map-modal id="modal" @click-store-route="onClickStoreRoute" />
+    <map-modal id="modal" />
   </div>
 </template>
 
@@ -26,7 +26,7 @@ import MarkerOverlay from '~/components/googleMaps/overlays/MarkerOverlay.vue'
 import PolylineOverlay from '~/components/googleMaps/overlays/PolylineOverlay.vue'
 
 export default {
-  components: { GoogleMaps, MarkerOverlay, PolylineOverlay, MapModal },
+  components: { GoogleMaps, PolylineOverlay, MarkerOverlay, MapModal },
   props: {
     mapElement: {
       type: HTMLDivElement,
@@ -36,7 +36,6 @@ export default {
   data() {
     return {
       steps: [],
-      showModal: false,
       libraries: {
         placesService: null,
         directionsService: null
@@ -67,15 +66,15 @@ export default {
       this.libraries.placesService = new this.$google.maps.places.PlacesService(
         map
       )
-      this.addDragEndListener(map)
+      this.addMapDragEndListener(map)
       this.$store.dispatch('resetStores', this.libraries.placesService)
     },
     onLoadMarker({ marker, placeId }) {
       marker.addListener('click', () => {
-        this.$store.commit('setSelectedStore', placeId)
+        this.estimateRoute(placeId)
       })
     },
-    addDragEndListener(map) {
+    addMapDragEndListener(map) {
       map.addListener('dragend', () => {
         this.$store.commit('setCurrentCenter', map.getCenter())
         this.$store.dispatch('resetStores', this.libraries.placesService)
@@ -86,18 +85,8 @@ export default {
         this.$el.querySelector('#modal')
       )
     },
-    onClickStoreRoute() {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.$store.dispatch(
-            'estimateRoute',
-            position.coords.latitude + ',' + position.coords.longitude
-          )
-        },
-        () => {
-          alert('失敗')
-        }
-      )
+    estimateRoute(placeId) {
+      this.$store.dispatch('estimateRoute', placeId)
     }
   }
 }

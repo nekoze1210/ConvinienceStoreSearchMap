@@ -2,7 +2,8 @@ export const state = () => ({
   currentCenterLatLng: null,
   stores: [],
   selectedStore: null,
-  storeDirection: null
+  storeDirection: null,
+  modalHeight: '40%'
 })
 
 export const mutations = {
@@ -12,24 +13,28 @@ export const mutations = {
   setStores(state, array) {
     state.stores = array
   },
-  setSelectedStore(state, placeId) {
-    state.selectedStore = state.stores.find(
-      (store) => (store.placeId = placeId)
-    )
+  setSelectedStore(state, store) {
+    state.selectedStore = store
   },
   setStoreDirection(state, direction) {
     state.storeDirection = direction
+  },
+  setModalHeight(state, modalHeight) {
+    state.modalHeight = modalHeight
   }
 }
 
 export const actions = {
+  changeModalHeightPercentage({ commit }, heightInt) {
+    commit('setModalHeight', heightInt.toString() + '%')
+  },
   resetStores({ state, commit }, placesService) {
     commit('setSelectedStore', null)
     commit('setStores', [])
     placesService.textSearch(
       {
         location: state.currentCenterLatLng,
-        radius: 300,
+        radius: 100,
         query: 'コンビニ'
       },
       (results, status) => {
@@ -48,23 +53,37 @@ export const actions = {
       }
     )
   },
-  findStore({ state }, { placeId }) {
-    return state.stores.find((store) => store.placeId === placeId)
-  },
-  estimateRoute({ state, commit }, currentLocation) {
-    const request = {
-      origin: currentLocation,
-      destination: state.selectedStore.position,
-      travelMode: 'WALKING',
-      optimizeWaypoints: true,
-      avoidHighways: false,
-      avoidTolls: false
-    }
-    const directionsService = new this.$google.maps.DirectionsService()
-    directionsService.route(request, (result, status) => {
-      if (status === 'OK') {
-        commit('setStoreDirection', result)
-      }
+  selectStore({ commit, state }, placeId) {
+    const store = state.stores.find((store) => {
+      return store.placeId === placeId
     })
+    commit('setSelectedStore', store)
+    commit('setStores', [store])
+  },
+  estimateRoute({ state, commit, dispatch }, placeId) {
+    dispatch('selectStore', placeId)
+    dispatch('changeModalHeightPercentage', 20)
+    // 現在地取得
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const request = {
+          origin: position.coords.latitude + ',' + position.coords.longitude,
+          destination: state.selectedStore.position,
+          travelMode: 'WALKING',
+          optimizeWaypoints: true,
+          avoidHighways: false,
+          avoidTolls: false
+        }
+        const directionsService = new this.$google.maps.DirectionsService()
+        directionsService.route(request, (result, status) => {
+          if (status === 'OK') {
+            commit('setStoreDirection', result)
+          }
+        })
+      },
+      () => {
+        alert('失敗')
+      }
+    )
   }
 }
