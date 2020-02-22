@@ -2,7 +2,7 @@ export const state = () => ({
   currentCenterLatLng: null,
   stores: [],
   selectedStore: null,
-  routeSteps: []
+  storeDirection: null
 })
 
 export const mutations = {
@@ -17,8 +17,8 @@ export const mutations = {
       (store) => (store.placeId = placeId)
     )
   },
-  setRouteSteps(state, steps) {
-    state.routeSteps = steps
+  setStoreDirection(state, direction) {
+    state.storeDirection = direction
   }
 }
 
@@ -39,7 +39,8 @@ export const actions = {
               photos: result.photos,
               position: result.geometry.location,
               name: result.name,
-              placeId: result.place_id
+              placeId: result.place_id,
+              formattedAddress: result.formatted_address
             }
           })
           commit('setStores', stores)
@@ -62,10 +63,12 @@ export const actions = {
     const directionsService = new this.$google.maps.DirectionsService()
     directionsService.route(request, (result, status) => {
       if (status === 'OK') {
-        const decodedPath = this.$google.maps.geometry.encoding.decodePath(
-          result.routes[0].overview_polyline
-        )
-        commit('setRouteSteps', decodedPath)
+        // console.log(result)
+
+        // const decodedPath = this.$google.maps.geometry.encoding.decodePath(
+        //   result.routes[0].overview_polyline
+        // )
+        commit('setStoreDirection', result)
       }
     })
   }
