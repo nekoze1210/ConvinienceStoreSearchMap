@@ -3,7 +3,7 @@
     <h2 class="title is-5">{{ heading }}</h2>
     <div v-if="!selectedStore" class="columns scrollable">
       <div
-        v-for="store in stores"
+        v-for="(store, index) in stores"
         :key="store.placeId"
         @click="onClickButton(store)"
         class="column is-full"
@@ -17,7 +17,9 @@
             />
           </div>
           <div class="column">
-            <h3 class="store-name subtitle is-6">{{ store.name }}</h3>
+            <h3 class="store-name subtitle is-6">
+              {{ (index + 1).toString() + '. ' + store.name }}
+            </h3>
             <p>{{ store.formattedAddress }}</p>
           </div>
         </div>

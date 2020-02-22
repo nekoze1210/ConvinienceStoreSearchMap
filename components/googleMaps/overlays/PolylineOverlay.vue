@@ -27,6 +27,9 @@ export default {
       strokeWeight: '7'
     })
   },
+  beforeDestroy() {
+    this.polyline.setMap(null)
+  },
   methods: {
     buildMvcArray() {
       return new this.$google.maps.MVCArray(this.$props.steps)

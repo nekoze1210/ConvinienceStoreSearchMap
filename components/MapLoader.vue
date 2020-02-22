@@ -2,11 +2,12 @@
   <div>
     <google-maps :mapElement="mapElement" @load-google-maps="onLoadGoogleMaps">
       <template #marker="{map}" v-if="showstores">
-        <div v-for="store in stores" :key="store.place_id">
+        <div v-for="(store, index) in stores" :key="store.placeId">
           <marker-overlay
             :map="map"
             :latLng="store.position"
             :placeId="store.placeId"
+            :options="{ label: (index + 1).toString() }"
             @load-marker-overlay="onLoadMarker"
           />
         </div>
@@ -39,7 +40,8 @@ export default {
       libraries: {
         placesService: null,
         directionsService: null
-      }
+      },
+      dragEndListener: null
     }
   },
   computed: {
@@ -75,7 +77,7 @@ export default {
       })
     },
     addMapDragEndListener(map) {
-      map.addListener('dragend', () => {
+      this.dragEndListener = map.addListener('dragend', () => {
         this.$store.commit('setCurrentCenter', map.getCenter())
         this.$store.dispatch('resetStores', this.libraries.placesService)
       })

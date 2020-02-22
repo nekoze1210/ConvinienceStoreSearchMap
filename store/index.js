@@ -28,8 +28,10 @@ export const actions = {
   changeModalHeightPercentage({ commit }, heightInt) {
     commit('setModalHeight', heightInt.toString() + '%')
   },
-  resetStores({ state, commit }, placesService) {
+  resetStores({ state, commit, dispatch }, placesService) {
     commit('setSelectedStore', null)
+    commit('setStoreDirection', null)
+    dispatch('changeModalHeightPercentage', 40)
     commit('setStores', [])
     placesService.textSearch(
       {
@@ -62,7 +64,7 @@ export const actions = {
   },
   estimateRoute({ state, commit, dispatch }, placeId) {
     dispatch('selectStore', placeId)
-    dispatch('changeModalHeightPercentage', 20)
+    dispatch('changeModalHeightPercentage', 10)
     // 現在地取得
     navigator.geolocation.getCurrentPosition(
       (position) => {
