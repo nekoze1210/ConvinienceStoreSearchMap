@@ -63,11 +63,6 @@ export const actions = {
     const directionsService = new this.$google.maps.DirectionsService()
     directionsService.route(request, (result, status) => {
       if (status === 'OK') {
-        // console.log(result)
-
-        // const decodedPath = this.$google.maps.geometry.encoding.decodePath(
-        //   result.routes[0].overview_polyline
-        // )
         commit('setStoreDirection', result)
       }
     })
