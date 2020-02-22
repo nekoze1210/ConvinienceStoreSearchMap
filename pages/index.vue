@@ -2,7 +2,7 @@
   <div>
     <div id="map" />
     <div v-if="!!mapElement && !!currentLocation">
-      <map-loader ref="mapLoader" :mapElement="mapElement" />
+      <map-loader :mapElement="mapElement" />
     </div>
   </div>
 </template>

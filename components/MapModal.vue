@@ -16,8 +16,8 @@
               class="image store-image is-128x128 is-rounded"
             />
           </div>
-          <div class="column">
-            <h3 class="store-name subtitle is-6">
+          <div class="column store-info">
+            <h3 class="title is-6">
               {{ (index + 1).toString() + '. ' + store.name }}
             </h3>
             <p>{{ store.formattedAddress }}</p>
@@ -64,14 +64,16 @@ export default {
 
 <style>
 h2.title {
+  color: #f7f7f7;
   text-align: center;
   margin-top: 1.5rem;
 }
 
 #modal {
   width: 100%;
+  max-width: 500px;
   height: 0;
-  background: #fff;
+  background: #323232;
   box-shadow: 0px -4px 3px rgba(0, 0, 0, 0.25);
   border-radius: 10px 10px 0px 0px;
   transition: height 0.25s;
@@ -90,5 +92,10 @@ h2.title {
   height: 100%;
   overflow-y: auto;
   margin: 0 10px;
+}
+
+.store-info,
+.title.is-6 {
+  color: #f7f7f7;
 }
 </style>

@@ -31,13 +31,26 @@ export default {
   },
   data() {
     return {
-      map: null
+      map: null,
+      listeners: []
     }
   },
   mounted() {
     const { Map } = this.$google.maps
     this.map = new Map(this.$props.mapElement, this.$props.mapOptions)
     this.$emit('load-google-maps', this.map)
+  },
+  methods: {
+    addListener(event, callback) {
+      this.listeners.push(this.map.addListener(event, callback))
+      return {
+        listenerId: this.listeners.length - 1,
+        listener: this.listeners[this.listeners.length - 1]
+      }
+    },
+    removeListener(listenerId) {
+      this.listeners[listenerId].remove()
+    }
   }
 }
 </script>

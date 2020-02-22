@@ -1,6 +1,7 @@
 <template>
   <div>
     <google-maps
+      ref="map"
       :mapElement="mapElement"
       @load-google-maps="onLoadGoogleMaps"
       :mapOptions="mapOptions"
@@ -116,13 +117,13 @@ export default {
       })
     },
     addMapDragEndListener(map) {
-      this.dragEndListener = this.dragEndListener = map.addListener(
-        'dragend',
-        () => {
-          this.$store.commit('setCurrentCenter', map.getCenter())
-          this.$store.dispatch('resetStores', this.libraries.placesService)
-        }
-      )
+      this.dragEndListener = this.$refs.map.addListener('dragend', () => {
+        this.$store.commit('setCurrentCenter', map.getCenter())
+        this.$store.dispatch('resetStores', this.libraries.placesService)
+      })
+    },
+    removeMapDragEndListener() {
+      this.$refs.map.removeListener(this.dragEndListener.listenerId)
     },
     setModal(map) {
       map.controls[this.$google.maps.ControlPosition.BOTTOM_CENTER].push(
@@ -130,7 +131,7 @@ export default {
       )
     },
     estimateRoute(placeId) {
-      this.dragEndListener.remove()
+      this.removeMapDragEndListener()
       this.$store.dispatch('estimateRoute', placeId)
     }
   }
