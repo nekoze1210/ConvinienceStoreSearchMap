@@ -23,8 +23,8 @@ export default {
       map: this.$props.map,
       path: this.buildMvcArray(),
       draggable: false,
-      strokeColor: '#4F83F0',
-      strokeWeight: '7'
+      strokeColor: '#9BC03A',
+      strokeWeight: '5'
     })
   },
   beforeDestroy() {

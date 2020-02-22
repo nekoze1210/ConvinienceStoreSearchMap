@@ -5,15 +5,26 @@
       @load-google-maps="onLoadGoogleMaps"
       :mapOptions="mapOptions"
     >
-      <template #marker="{map}" v-if="showstores">
-        <div v-for="(store, index) in stores" :key="store.placeId">
-          <marker-overlay
-            :map="map"
-            :latLng="store.position"
-            :placeId="store.placeId"
-            :options="{ label: (index + 1).toString() }"
-            @load-marker-overlay="onLoadMarker"
-          />
+      <template #marker="{map}">
+        <marker-overlay
+          :map="map"
+          :latLng="$store.state.currentLocation"
+          :placeId="$store.state.currentLocation.toString()"
+          :options="currentLocationMarkerOptions"
+        />
+        <div v-if="showstores">
+          <div v-for="(store, index) in stores" :key="store.placeId">
+            <marker-overlay
+              :map="map"
+              :latLng="store.position"
+              :placeId="store.placeId"
+              :options="{
+                label: (index + 1).toString(),
+                animation: $google.maps.Animation.DROP
+              }"
+              @load-marker-overlay="onLoadMarker"
+            />
+          </div>
         </div>
       </template>
       <template #polyline="{map}" v-if="routeSteps.length > 1">
@@ -30,6 +41,9 @@ import GoogleMaps from '~/components/GoogleMaps.vue'
 import MarkerOverlay from '~/components/googleMaps/overlays/MarkerOverlay.vue'
 import PolylineOverlay from '~/components/googleMaps/overlays/PolylineOverlay.vue'
 
+import currentLocationMarkerImage from '~/assets/currentLocationIcon.png'
+import mapStyleJSON from '~/assets/mapStyle.json'
+
 export default {
   components: { GoogleMaps, PolylineOverlay, MarkerOverlay, MapModal },
   props: {
@@ -42,14 +56,24 @@ export default {
     return {
       mapOptions: {
         center: {
-          lat: this.$store.state.currentLocation.coords.latitude,
-          lng: this.$store.state.currentLocation.coords.longitude
+          lat: this.$store.state.currentLocation.lat(),
+          lng: this.$store.state.currentLocation.lng()
         },
         zoom: 15,
         mapTypeId: 'roadmap',
         disableDefaultUI: true,
         clickableIcons: false,
-        gestureHandling: 'greedy'
+        gestureHandling: 'greedy',
+        styles: mapStyleJSON
+      },
+      currentLocationMarkerOptions: {
+        icon: {
+          url: currentLocationMarkerImage,
+          size: new this.$google.maps.Size(71, 71),
+          origin: new this.$google.maps.Point(0, 0),
+          anchor: new this.$google.maps.Point(17, 34),
+          scaledSize: new this.$google.maps.Size(40, 40)
+        }
       },
       steps: [],
       libraries: {
@@ -106,8 +130,8 @@ export default {
       )
     },
     estimateRoute(placeId) {
-      this.$store.dispatch('estimateRoute', placeId)
       this.dragEndListener.remove()
+      this.$store.dispatch('estimateRoute', placeId)
     }
   }
 }

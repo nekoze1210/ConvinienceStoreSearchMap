@@ -70,10 +70,7 @@ export const actions = {
     dispatch('selectStore', placeId)
     dispatch('changeModalHeightPercentage', 15)
     const request = {
-      origin:
-        state.currentLocation.coords.latitude +
-        ',' +
-        state.currentLocation.coords.longitude,
+      origin: state.currentLocation.lat() + ',' + state.currentLocation.lng(),
       destination: state.selectedStore.position,
       travelMode: 'WALKING',
       optimizeWaypoints: true,
@@ -90,7 +87,11 @@ export const actions = {
   setCurrentLocation({ commit }) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        commit('setCurrentLocation', position)
+        const latLng = new this.$google.maps.LatLng({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        })
+        commit('setCurrentLocation', latLng)
       },
       () => {
         alert('現在地の取得に失敗しました。')

@@ -20,7 +20,9 @@ export default {
       type: Object,
       required: false,
       default: () => {
-        return {}
+        return {
+          animation: this.$google.maps.Animation.DROP
+        }
       }
     }
   },
@@ -33,7 +35,6 @@ export default {
     this.marker = new this.$google.maps.Marker({
       map: this.$props.map,
       position: this.$props.latLng,
-      animation: this.$google.maps.Animation.DROP,
       ...this.$props.options
     })
     this.$emit('load-marker-overlay', {
