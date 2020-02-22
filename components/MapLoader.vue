@@ -1,6 +1,10 @@
 <template>
   <div>
-    <google-maps :mapElement="mapElement" @load-google-maps="onLoadGoogleMaps">
+    <google-maps
+      :mapElement="mapElement"
+      @load-google-maps="onLoadGoogleMaps"
+      :mapOptions="mapOptions"
+    >
       <template #marker="{map}" v-if="showstores">
         <div v-for="(store, index) in stores" :key="store.placeId">
           <marker-overlay
@@ -36,6 +40,17 @@ export default {
   },
   data() {
     return {
+      mapOptions: {
+        center: {
+          lat: this.$store.state.currentLocation.coords.latitude,
+          lng: this.$store.state.currentLocation.coords.longitude
+        },
+        zoom: 15,
+        mapTypeId: 'roadmap',
+        disableDefaultUI: true,
+        clickableIcons: false,
+        gestureHandling: 'greedy'
+      },
       steps: [],
       libraries: {
         placesService: null,

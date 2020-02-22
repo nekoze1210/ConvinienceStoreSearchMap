@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="map" />
-    <div v-if="!!mapElement">
+    <div v-if="!!mapElement && !!currentLocation">
       <map-loader ref="mapLoader" :mapElement="mapElement" />
     </div>
   </div>
@@ -17,7 +17,13 @@ export default {
       mapElement: null
     }
   },
+  computed: {
+    currentLocation() {
+      return this.$store.state.currentLocation
+    }
+  },
   mounted() {
+    this.$store.dispatch('setCurrentLocation')
     this.mapElement = this.$el.querySelector('#map')
   }
 }

@@ -3,7 +3,8 @@ export const state = () => ({
   stores: [],
   selectedStore: null,
   storeDirection: null,
-  modalHeight: '40%'
+  modalHeight: '40%',
+  currentLocation: null
 })
 
 export const mutations = {
@@ -21,6 +22,9 @@ export const mutations = {
   },
   setModalHeight(state, modalHeight) {
     state.modalHeight = modalHeight
+  },
+  setCurrentLocation(state, location) {
+    state.currentLocation = location
   }
 }
 
@@ -46,8 +50,8 @@ export const actions = {
               photos: result.photos,
               position: result.geometry.location,
               name: result.name,
-              placeId: result.place_id,
-              formattedAddress: result.formatted_address
+              formattedAddress: result.formatted_address,
+              placeId: result.place_id
             }
           })
           commit('setStores', stores)
@@ -65,26 +69,31 @@ export const actions = {
   estimateRoute({ state, commit, dispatch }, placeId) {
     dispatch('selectStore', placeId)
     dispatch('changeModalHeightPercentage', 15)
-    // 現在地取得
+    const request = {
+      origin:
+        state.currentLocation.coords.latitude +
+        ',' +
+        state.currentLocation.coords.longitude,
+      destination: state.selectedStore.position,
+      travelMode: 'WALKING',
+      optimizeWaypoints: true,
+      avoidHighways: false,
+      avoidTolls: false
+    }
+    const directionsService = new this.$google.maps.DirectionsService()
+    directionsService.route(request, (result, status) => {
+      if (status === 'OK') {
+        commit('setStoreDirection', result)
+      }
+    })
+  },
+  setCurrentLocation({ commit }) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const request = {
-          origin: position.coords.latitude + ',' + position.coords.longitude,
-          destination: state.selectedStore.position,
-          travelMode: 'WALKING',
-          optimizeWaypoints: true,
-          avoidHighways: false,
-          avoidTolls: false
-        }
-        const directionsService = new this.$google.maps.DirectionsService()
-        directionsService.route(request, (result, status) => {
-          if (status === 'OK') {
-            commit('setStoreDirection', result)
-          }
-        })
+        commit('setCurrentLocation', position)
       },
       () => {
-        alert('経路情報の取得に失敗しました。')
+        alert('現在地の取得に失敗しました。')
       }
     )
   }
