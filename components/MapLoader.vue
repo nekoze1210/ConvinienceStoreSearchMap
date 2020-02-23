@@ -32,7 +32,7 @@
         <polyline-overlay :map="map" :steps="routeSteps" />
       </template>
     </google-maps>
-    <map-modal id="modal" />
+    <map-modal id="modal" @click-store="estimateRoute" />
   </div>
 </template>
 
@@ -76,7 +76,6 @@ export default {
           scaledSize: new this.$google.maps.Size(40, 40)
         }
       },
-      steps: [],
       libraries: {
         placesService: null,
         directionsService: null
@@ -102,13 +101,13 @@ export default {
     }
   },
   methods: {
-    onLoadGoogleMaps(map) {
-      this.setModal(map)
-      this.$store.commit('setCurrentCenter', map.getCenter())
+    onLoadGoogleMaps() {
+      this.$store.commit('setCurrentCenter', this.$refs.map.getCenter())
       this.libraries.placesService = new this.$google.maps.places.PlacesService(
-        map
+        this.$refs.map.map
       )
-      this.addMapDragEndListener(map)
+      this.addMapDragEndListener()
+      this.addModalToControls(this.$refs.map.map)
       this.$store.dispatch('resetStores', this.libraries.placesService)
     },
     onLoadMarker({ marker, placeId }) {
@@ -116,17 +115,18 @@ export default {
         this.estimateRoute(placeId)
       })
     },
-    addMapDragEndListener(map) {
+    addMapDragEndListener() {
       this.dragEndListener = this.$refs.map.addListener('dragend', () => {
-        this.$store.commit('setCurrentCenter', map.getCenter())
+        this.$store.commit('setCurrentCenter', this.$refs.map.getCenter())
         this.$store.dispatch('resetStores', this.libraries.placesService)
       })
     },
     removeMapDragEndListener() {
       this.$refs.map.removeListener(this.dragEndListener.listenerId)
     },
-    setModal(map) {
-      map.controls[this.$google.maps.ControlPosition.BOTTOM_CENTER].push(
+    addModalToControls() {
+      this.$refs.map.addControls(
+        this.$google.maps.ControlPosition.BOTTOM_CENTER,
         this.$el.querySelector('#modal')
       )
     },

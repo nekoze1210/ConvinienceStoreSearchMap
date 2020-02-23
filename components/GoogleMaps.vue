@@ -50,6 +50,12 @@ export default {
     },
     removeListener(listenerId) {
       this.listeners[listenerId].remove()
+    },
+    getCenter() {
+      return this.map.getCenter()
+    },
+    addControls(position, element) {
+      this.map.controls[position].push(element)
     }
   }
 }

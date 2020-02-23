@@ -56,7 +56,7 @@ export default {
       return store.photos === undefined ? '' : store.photos[0].getUrl()
     },
     onClickButton(store) {
-      this.$store.dispatch('estimateRoute', store.placeId)
+      this.$emit('click-store', store.placeId)
     }
   }
 }
