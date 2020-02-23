@@ -12,7 +12,17 @@ export default {
   props: {
     mapOptions: {
       type: Object,
-      required: true
+      default: () => ({
+        center: {
+          lat: 35.7329854,
+          lng: 139.7128128
+        },
+        zoom: 15,
+        mapTypeId: 'roadmap',
+        disableDefaultUI: true,
+        clickableIcons: false,
+        gestureHandling: 'greedy'
+      })
     },
     mapElement: {
       type: HTMLDivElement,

@@ -1,86 +1,27 @@
 <template>
   <div>
-    <google-maps
-      ref="map"
-      :mapElement="mapElement"
-      @load-google-maps="onLoadGoogleMaps"
-      :mapOptions="mapOptions"
-    >
-      <template #marker="{map}">
-        <marker-overlay
-          :map="map"
-          :latLng="$store.state.currentLocation"
-          :placeId="$store.state.currentLocation.toString()"
-          :options="currentLocationMarkerOptions"
-        />
-        <div v-if="showstores">
-          <div v-for="(store, index) in stores" :key="store.placeId">
-            <marker-overlay
-              :map="map"
-              :latLng="store.position"
-              :placeId="store.placeId"
-              :options="{
-                label: (index + 1).toString(),
-                animation: $google.maps.Animation.DROP
-              }"
-              @load-marker-overlay="onLoadMarker"
-            />
-          </div>
-        </div>
-      </template>
-      <template #polyline="{map}" v-if="routeSteps.length > 1">
-        <polyline-overlay :map="map" :steps="routeSteps" />
-      </template>
-    </google-maps>
-    <map-modal id="modal" @click-store="estimateRoute" />
+    <template v-if="!!map">
+      <slot :map="map" name="marker" />
+      <slot :map="map" name="polyline" />
+    </template>
   </div>
 </template>
 
 <script>
-import MapModal from '~/components/MapModal.vue'
-import GoogleMaps from '~/components/GoogleMaps.vue'
-import MarkerOverlay from '~/components/googleMaps/overlays/MarkerOverlay.vue'
-import PolylineOverlay from '~/components/googleMaps/overlays/PolylineOverlay.vue'
-
-import currentLocationMarkerImage from '~/assets/currentLocationIcon.png'
-import mapStyleJSON from '~/assets/mapStyle.json'
-
 export default {
-  components: { GoogleMaps, PolylineOverlay, MarkerOverlay, MapModal },
   props: {
     mapElement: {
       type: HTMLDivElement,
+      required: true
+    },
+    mapOptions: {
+      type: Object,
       required: true
     }
   },
   data() {
     return {
-      mapOptions: {
-        center: {
-          lat: this.$store.state.currentLocation.lat(),
-          lng: this.$store.state.currentLocation.lng()
-        },
-        zoom: 15,
-        mapTypeId: 'roadmap',
-        disableDefaultUI: true,
-        clickableIcons: false,
-        gestureHandling: 'greedy',
-        styles: mapStyleJSON
-      },
-      currentLocationMarkerOptions: {
-        icon: {
-          url: currentLocationMarkerImage,
-          size: new this.$google.maps.Size(71, 71),
-          origin: new this.$google.maps.Point(0, 0),
-          anchor: new this.$google.maps.Point(17, 34),
-          scaledSize: new this.$google.maps.Size(40, 40)
-        }
-      },
-      libraries: {
-        placesService: null,
-        directionsService: null
-      },
-      dragEndListener: null
+      map: null
     }
   },
   computed: {
@@ -100,45 +41,15 @@ export default {
       }
     }
   },
+  mounted() {
+    this.initializeMap()
+    this.$store.commit('setCurrentCenter', this.map.getCenter())
+    this.$emit('load-google-maps', this.map)
+  },
   methods: {
-    onLoadGoogleMaps() {
-      this.$store.commit('setCurrentCenter', this.$refs.map.getCenter())
-      this.libraries.placesService = new this.$google.maps.places.PlacesService(
-        this.$refs.map.map
-      )
-      this.addMapDragEndListener()
-      this.addModalToControls(this.$refs.map.map)
-      this.$store.dispatch('resetStores', this.libraries.placesService)
-    },
-    onLoadMarker({ marker, placeId }) {
-      marker.addListener('click', () => {
-        this.estimateRoute(placeId)
-      })
-    },
-    addMapDragEndListener() {
-      this.dragEndListener = this.$refs.map.addListener('dragend', () => {
-        this.$store.commit('setCurrentCenter', this.$refs.map.getCenter())
-        this.$store.dispatch('resetStores', this.libraries.placesService)
-      })
-    },
-    removeMapDragEndListener() {
-      this.$refs.map.removeListener(this.dragEndListener.listenerId)
-    },
-    addModalToControls() {
-      this.$refs.map.addControls(
-        this.$google.maps.ControlPosition.BOTTOM_CENTER,
-        this.$el.querySelector('#modal')
-      )
-    },
-    addLocationButtonToControls() {
-      this.$refs.map.addControls(
-        this.$google.maps.ControlPosition.BOTTOM_CENTER,
-        this.$el.querySelector('#modal')
-      )
-    },
-    estimateRoute(placeId) {
-      this.removeMapDragEndListener()
-      this.$store.dispatch('estimateRoute', placeId)
+    initializeMap() {
+      const { Map } = this.$google.maps
+      this.map = new Map(this.$props.mapElement, this.$props.mapOptions)
     }
   }
 }
