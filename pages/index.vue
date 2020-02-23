@@ -4,12 +4,7 @@
     <map-loader
       :mapElement="mapElement"
       :mapOptions="mapOptions"
-      v-if="
-        !!mapElement &&
-          !!currentLocation &&
-          !!mapOptions.center.lat &&
-          !!mapOptions.center.lng
-      "
+      v-if="!!mapElement && !!currentLocation"
       @load-google-maps="onLoadGoogleMaps"
     >
       <template #marker="{map}">
@@ -56,12 +51,10 @@ export default {
     }
   },
   async mounted() {
-    try {
-      await this.$store.dispatch('setCurrentLocation')
-      this.mapOptions.center.lat = this.$store.state.currentLocation.lat()
-      this.mapOptions.center.lng = this.$store.state.currentLocation.lng()
-      this.mapElement = this.$el.querySelector('#map')
-    } catch {}
+    await this.$store.dispatch('setCurrentLocation')
+    this.mapOptions.center.lat = this.$store.state.currentLocation.lat()
+    this.mapOptions.center.lng = this.$store.state.currentLocation.lng()
+    this.mapElement = this.$el.querySelector('#map')
   },
   methods: {
     onLoadGoogleMaps(map) {
