@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import noImage from '~/assets/no_image.png'
+
 export default {
   computed: {
     stores() {
@@ -53,7 +55,7 @@ export default {
   },
   methods: {
     storePhoto(store) {
-      return store.photos === undefined ? '' : store.photos[0].getUrl()
+      return store.photos === undefined ? noImage : store.photos[0].getUrl()
     },
     onClickButton(store) {
       this.$emit('click-store', store.placeId)
