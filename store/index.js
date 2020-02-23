@@ -37,11 +37,12 @@ export const actions = {
     commit('setStoreDirection', null)
     dispatch('changeModalHeightPercentage', 40)
     commit('setStores', [])
-    placesService.textSearch(
+    placesService.nearbySearch(
       {
         location: state.currentCenterLatLng,
-        radius: 100,
-        query: 'コンビニ'
+        radius: 500,
+        openNow: true,
+        type: 'convenience_store'
       },
       (results, status) => {
         if (status === 'OK') {
