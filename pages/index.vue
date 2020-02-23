@@ -55,16 +55,13 @@ export default {
       return this.$store.state.currentLocation
     }
   },
-  created() {
-    this.$store.dispatch('setCurrentLocation')
-  },
-  mounted() {
-    this.$store.dispatch('setCurrentLocation')
-    setTimeout(() => {
+  async mounted() {
+    try {
+      await this.$store.dispatch('setCurrentLocation')
       this.mapOptions.center.lat = this.$store.state.currentLocation.lat()
       this.mapOptions.center.lng = this.$store.state.currentLocation.lng()
-    }, 1000)
-    this.mapElement = this.$el.querySelector('#map')
+      this.mapElement = this.$el.querySelector('#map')
+    } catch {}
   },
   methods: {
     onLoadGoogleMaps(map) {

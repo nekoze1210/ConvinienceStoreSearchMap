@@ -86,17 +86,20 @@ export const actions = {
     })
   },
   setCurrentLocation({ commit }) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const latLng = new this.$google.maps.LatLng({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        })
-        commit('setCurrentLocation', latLng)
-      },
-      () => {
-        alert('現在地の取得に失敗しました。')
-      }
-    )
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latLng = new this.$google.maps.LatLng({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+          commit('setCurrentLocation', latLng)
+          resolve()
+        },
+        () => {
+          reject(new Error('現在地の取得に失敗'))
+        }
+      )
+    })
   }
 }
