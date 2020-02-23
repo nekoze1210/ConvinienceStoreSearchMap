@@ -1,9 +1,10 @@
 <template>
   <div>
     <div id="map" />
-    <div v-if="!!mapElement && !!currentLocation">
-      <map-loader :mapElement="mapElement" />
-    </div>
+    <map-loader
+      :mapElement="mapElement"
+      v-if="!!mapElement && !!currentLocation"
+    />
   </div>
 </template>
 

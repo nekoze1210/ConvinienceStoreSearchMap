@@ -20,7 +20,7 @@
             <h3 class="title is-6">
               {{ (index + 1).toString() + '. ' + store.name }}
             </h3>
-            <p>{{ store.formattedAddress }}</p>
+            <p>{{ store.vicinity }}</p>
           </div>
         </div>
       </div>

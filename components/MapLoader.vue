@@ -130,6 +130,12 @@ export default {
         this.$el.querySelector('#modal')
       )
     },
+    addLocationButtonToControls() {
+      this.$refs.map.addControls(
+        this.$google.maps.ControlPosition.BOTTOM_CENTER,
+        this.$el.querySelector('#modal')
+      )
+    },
     estimateRoute(placeId) {
       this.removeMapDragEndListener()
       this.$store.dispatch('estimateRoute', placeId)

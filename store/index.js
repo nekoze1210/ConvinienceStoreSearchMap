@@ -51,7 +51,7 @@ export const actions = {
               photos: result.photos,
               position: result.geometry.location,
               name: result.name,
-              formattedAddress: result.formatted_address,
+              vicinity: result.vicinity,
               placeId: result.place_id
             }
           })
