@@ -1,4 +1,4 @@
-# convinience_store_search_app
+# convenience_store_search_app
 
 > My bedazzling Nuxt.js project
 
