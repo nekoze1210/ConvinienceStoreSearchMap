@@ -41,7 +41,7 @@ export default {
     },
     heading() {
       return this.selectedStore !== undefined && this.selectedStore !== null
-        ? '「' + this.selectedStore.name + '」' + 'までのルート'
+        ? `「${this.selectedStore.name}」 までのルート`
         : '近くのコンビニ'
     },
     modalHeight: {

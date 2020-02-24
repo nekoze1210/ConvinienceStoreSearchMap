@@ -3,8 +3,8 @@ export const state = () => ({
   stores: [],
   selectedStore: null,
   storeDirection: null,
-  modalHeight: '40%',
-  currentLocation: null
+  currentLocation: null,
+  modalHeight: '40%'
 })
 
 export const mutations = {

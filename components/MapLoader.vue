@@ -24,23 +24,6 @@ export default {
       map: null
     }
   },
-  computed: {
-    stores() {
-      return this.$store.state.stores
-    },
-    showstores() {
-      return this.$store.state.stores.length > 0
-    },
-    routeSteps() {
-      if (this.$store.state.storeDirection != null) {
-        return this.$google.maps.geometry.encoding.decodePath(
-          this.$store.state.storeDirection.routes[0].overview_polyline
-        )
-      } else {
-        return []
-      }
-    }
-  },
   mounted() {
     this.initializeMap()
     this.$store.commit('setCurrentCenter', this.map.getCenter())

@@ -8,13 +8,22 @@
       @load-google-maps="onLoadGoogleMaps"
     >
       <template #marker="{map}">
-        <store-markers :map="map" />
+        <store-markers
+          ref="storeMarkers"
+          :map="map"
+          :key="storeMarkersComponentKey"
+        />
       </template>
       <template #polyline="{map}">
         <selected-store-polyline :map="map" />
       </template>
     </map-loader>
     <stores-modal id="modal" @click-store="onClickStore" />
+    <back-navigation
+      id="back-navigation"
+      v-show="$store.state.storeDirection"
+      @click-back-navigation="forceRenderSroreMarkers"
+    />
   </div>
 </template>
 
@@ -23,11 +32,18 @@ import MapLoader from '~/components/MapLoader.vue'
 import StoreMarkers from '~/components/StoreMarkers.vue'
 import SelectedStorePolyline from '~/components/SelectedStorePolyline.vue'
 import StoresModal from '~/components/StoresModal.vue'
+import BackNavigation from '~/components/BackNavigation.vue'
 
 import mapStyleJSON from '~/assets/mapStyle.json'
 
 export default {
-  components: { MapLoader, StoreMarkers, SelectedStorePolyline, StoresModal },
+  components: {
+    MapLoader,
+    StoreMarkers,
+    SelectedStorePolyline,
+    StoresModal,
+    BackNavigation
+  },
   data() {
     return {
       mapElement: null,
@@ -42,7 +58,8 @@ export default {
         clickableIcons: false,
         gestureHandling: 'greedy',
         styles: mapStyleJSON
-      }
+      },
+      storeMarkersComponentKey: 0
     }
   },
   computed: {
@@ -58,13 +75,27 @@ export default {
   },
   methods: {
     onLoadGoogleMaps(map) {
-      const modalElement = this.$el.querySelector('#modal')
-      const bottomCenter = this.$google.maps.ControlPosition.BOTTOM_CENTER
-      // カスタムコントロールの設置
-      map.controls[bottomCenter].push(modalElement)
+      // カスタムコントロールの設置: BOTTOM_CENTER
+      this.addCustomControl(
+        map,
+        this.$google.maps.ControlPosition.BOTTOM_CENTER,
+        this.$el.querySelector('#modal')
+      )
+      // カスタムコントロールの設置: TOP_LEFT
+      this.addCustomControl(
+        map,
+        this.$google.maps.ControlPosition.TOP_LEFT,
+        this.$el.querySelector('#back-navigation')
+      )
     },
     onClickStore(placeId) {
       this.$store.dispatch('estimateRoute', placeId)
+    },
+    addCustomControl(map, position, element) {
+      map.controls[position].push(element)
+    },
+    forceRenderSroreMarkers() {
+      this.storeMarkersComponentKey++
     }
   }
 }

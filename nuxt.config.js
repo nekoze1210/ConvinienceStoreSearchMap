@@ -43,7 +43,8 @@ export default {
     '@nuxtjs/axios',
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
-    '@nuxtjs/bulma'
+    '@nuxtjs/bulma',
+    'nuxt-fontawesome'
   ],
   /*
    ** Axios module configuration
@@ -58,6 +59,9 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+  fontawesome: {
+    component: 'fa'
   },
   env: {
     API_KEY: process.env.API_KEY
