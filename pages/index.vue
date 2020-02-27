@@ -34,7 +34,7 @@ import SelectedStorePolyline from '~/components/SelectedStorePolyline.vue'
 import StoresModal from '~/components/StoresModal.vue'
 import BackNavigation from '~/components/BackNavigation.vue'
 
-import mapStyleJSON from '~/assets/mapStyle.json'
+import mapStyleJSON from '~/assets/json/mapStyle.json'
 
 export default {
   components: {

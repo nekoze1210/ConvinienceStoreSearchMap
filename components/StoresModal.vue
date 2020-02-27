@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import noImage from '~/assets/no_image.png'
+import noImage from '~/assets/images/no_image.png'
 
 export default {
   computed: {

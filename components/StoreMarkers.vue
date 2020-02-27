@@ -25,7 +25,7 @@
 
 <script>
 import MarkerOverlay from '~/components/googleMaps/overlays/MarkerOverlay.vue'
-import currentLocationMarkerImage from '~/assets/currentLocationIcon.png'
+import currentLocationMarkerImage from '~/assets/images/currentLocationIcon.png'
 
 export default {
   components: { MarkerOverlay },
