@@ -19,11 +19,3 @@ export default {
   }
 }
 </script>
-
-<style>
-#arrow-left {
-  font-size: 30px;
-  color: white;
-  margin: 10px;
-}
-</style>

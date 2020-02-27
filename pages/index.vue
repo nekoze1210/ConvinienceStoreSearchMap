@@ -100,21 +100,3 @@ export default {
   }
 }
 </script>
-
-<style>
-#map {
-  position: fixed !important;
-  height: 100%;
-  width: 100%;
-}
-
-#modal {
-  width: 100%;
-  max-width: 500px;
-  height: 0;
-  background: #323232;
-  box-shadow: 0px -4px 3px rgba(0, 0, 0, 0.25);
-  border-radius: 10px 10px 0px 0px;
-  transition: height 0.25s;
-}
-</style>
