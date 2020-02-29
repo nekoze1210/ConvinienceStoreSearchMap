@@ -47,11 +47,6 @@ export default {
     'nuxt-fontawesome'
   ],
   /*
-   ** Axios module configuration
-   ** See https://axios.nuxtjs.org/options
-   */
-  axios: {},
-  /*
    ** Build configuration
    */
   build: {
